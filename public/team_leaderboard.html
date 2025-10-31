@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Leaderboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --primary: #6c5ce7;
+      --secondary: #00cec9;
+      --gold: #f39c12;
+      --silver: #95a5a6;
+      --bronze: #cd7f32;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --light: #f8f9fa;
+      --dark: #2d3436;
+      --gray: #dfe6e9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem;
+      color: var(--dark);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: white;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      margin-bottom: 2rem;
+      text-align: center;
+      animation: fadeInDown 0.5s;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      color: var(--primary);
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    .podium {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+      align-items: end;
+    }
+
+    .podium-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      transition: all 0.3s;
+      animation: fadeInUp 0.5s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .podium-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    .podium-card.first {
+      order: 2;
+      animation-delay: 0.2s;
+    }
+
+    .podium-card.second {
+      order: 1;
+      animation-delay: 0.1s;
+    }
+
+    .podium-card.third {
+      order: 3;
+      animation-delay: 0.3s;
+    }
+
+    .rank-badge {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .first .rank-badge {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      font-size: 3rem;
+    }
+
+    .second .rank-badge {
+      background: linear-gradient(135deg, #c0c0c0, #e8e8e8);
+    }
+
+    .third .rank-badge {
+      background: linear-gradient(135deg, #cd7f32, #d4964f);
+    }
+
+    .team-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .first .team-name {
+      font-size: 1.6rem;
+    }
+
+    .team-score {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 1rem 0;
+    }
+
+    .first .team-score {
+      font-size: 2.5rem;
+      color: var(--gold);
+    }
+
+    .second .team-score {
+      color: var(--silver);
+    }
+
+    .third .team-score {
+      color: var(--bronze);
+    }
+
+    .team-members {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+
+    .member-tag {
+      background: var(--light);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      color: var(--dark);
+    }
+
+    .leaderboard {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      animation: fadeInUp 0.5s;
+      animation-delay: 0.4s;
+    }
+
+    .leaderboard h2 {
+      color: var(--primary);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .leaderboard-table thead {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 1rem;
+      text-align: left;
+    }
+
+    .leaderboard-table th {
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 0.5px;
+    }
+
+    .leaderboard-table tbody tr {
+      border-bottom: 1px solid var(--gray);
+      transition: all 0.2s;
+    }
+
+    .leaderboard-table tbody tr:hover {
+      background: var(--light);
+      transform: scale(1.01);
+    }
+
+    .rank-number {
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--primary);
+      width: 50px;
+      text-align: center;
+    }
+
+    .score-badge {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 25px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+    }
+
+    .score-excellent {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+    }
+
+    .score-good {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+    }
+
+    .score-average {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+    }
+
+    .score-low {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 3rem;
+      color: #999;
+      font-size: 1.2rem;
+    }
+
+    .controls {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+    }
+
+    .btn-secondary {
+      background: var(--secondary);
+    }
+
+    .btn-secondary:hover {
+      background: #00b3a8;
+      box-shadow: 0 5px 15px rgba(0, 206, 201, 0.3);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      text-align: center;
+      animation: fadeInUp 0.5s;
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 768px) {
+      .podium {
+        grid-template-columns: 1fr;
+      }
+
+      .podium-card.first,
+      .podium-card.second,
+      .podium-card.third {
+        order: initial;
+      }
+
+      .leaderboard-table {
+        font-size: 0.9rem;
+      }
+
+      .leaderboard-table th,
+      .leaderboard-table td {
+        padding: 0.7rem 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>
+        <i class="fas fa-trophy"></i>
+        Team Leaderboard
+      </h1>
+      <p class="subtitle">See how teams are performing in the current quiz</p>
+    </div>
+
+    <div class="controls">
+      <button class="btn" onclick="loadLeaderboard()">
+        <i class="fas fa-sync"></i> Refresh
+      </button>
+      <button class="btn btn-secondary" onclick="window.location.href='admin_welcome.html'">
+        <i class="fas fa-home"></i> Back to Home
+      </button>
+    </div>
+
+    <div id="stats-section" class="stats-grid"></div>
+
+    <div id="podium-section"></div>
+
+    <div class="leaderboard">
+      <h2><i class="fas fa-list-ol"></i> Full Rankings</h2>
+      <div id="leaderboard-content">
+        <div class="no-data">
+          <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: var(--primary);"></i>
+          <p style="margin-top: 1rem;">Loading leaderboard...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load leaderboard on page load
+    window.onload = () => {
+      loadLeaderboard();
+      setInterval(loadLeaderboard, 10000); // Auto-refresh every 10 seconds
+    };
+
+    async function loadLeaderboard() {
+      try {
+        const res = await fetch('/api/teams/leaderboard');
+
+        if (!res.ok) {
+          document.getElementById('leaderboard-content').innerHTML = `
+            <div class="no-data">
+              <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: var(--warning);"></i>
+              <p style="margin-top: 1rem;">No quiz active or no team submissions yet</p>
+            </div>
+          `;
+          return;
+        }
+
+        const teams = await res.json();
+
+        if (teams.length === 0) {
+          document.getElementById('leaderboard-content').innerHTML = `
+            <div class="no-data">
+              <i class="fas fa-users-slash" style="font-size: 3rem; color: #999;"></i>
+              <p style="margin-top: 1rem;">No team submissions yet</p>
+            </div>
+          `;
+          return;
+        }
+
+        renderStats(teams);
+        renderPodium(teams);
+        renderTable(teams);
+
+      } catch (error) {
+        console.error('Error loading leaderboard:', error);
+        document.getElementById('leaderboard-content').innerHTML = `
+          <div class="no-data">
+            <i class="fas fa-times-circle" style="font-size: 3rem; color: var(--danger);"></i>
+            <p style="margin-top: 1rem;">Error loading leaderboard</p>
+          </div>
+        `;
+      }
+    }
+
+    function renderStats(teams) {
+      const totalTeams = teams.length;
+      const avgScore = teams.reduce((sum, t) => sum + parseFloat(t.percentage), 0) / totalTeams;
+      const highestScore = teams[0]?.percentage || 0;
+      const completedCount = teams.filter(t => !t.manualGradingNeeded).length;
+
+      document.getElementById('stats-section').innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value"><i class="fas fa-users"></i> ${totalTeams}</div>
+          <div class="stat-label">Total Teams</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${avgScore.toFixed(1)}%</div>
+          <div class="stat-label">Average Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${highestScore}%</div>
+          <div class="stat-label">Highest Score</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">${completedCount}/${totalTeams}</div>
+          <div class="stat-label">Fully Graded</div>
+        </div>
+      `;
+    }
+
+    function renderPodium(teams) {
+      const podiumSection = document.getElementById('podium-section');
+
+      if (teams.length < 3) {
+        podiumSection.innerHTML = '';
+        return;
+      }
+
+      const topThree = teams.slice(0, 3);
+
+      podiumSection.innerHTML = `
+        <div class="podium">
+          ${topThree.map((team, idx) => {
+            const rank = idx + 1;
+            const rankClass = rank === 1 ? 'first' : rank === 2 ? 'second' : 'third';
+            const icon = rank === 1 ? '👑' : rank === 2 ? '🥈' : '🥉';
+
+            return `
+              <div class="podium-card ${rankClass}">
+                <div class="rank-badge">
+                  ${icon}
+                </div>
+                <div class="team-name">${team.teamName}</div>
+                <div class="team-score">${team.percentage}%</div>
+                <div style="color: #666; font-size: 0.9rem;">
+                  ${team.score} / ${team.totalPoints} points
+                </div>
+                <div class="team-members">
+                  ${team.teamMembers.map(member => `
+                    <span class="member-tag">
+                      <i class="fas fa-user"></i> ${member}
+                    </span>
+                  `).join('')}
+                </div>
+                ${team.manualGradingNeeded ? `
+                  <div style="margin-top: 1rem; padding: 0.5rem; background: #fff3cd; border-radius: 8px; font-size: 0.85rem;">
+                    <i class="fas fa-clock"></i> Pending manual grading
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function renderTable(teams) {
+      const content = document.getElementById('leaderboard-content');
+
+      if (teams.length === 0) {
+        content.innerHTML = `
+          <div class="no-data">
+            <i class="fas fa-users-slash" style="font-size: 3rem; color: #999;"></i>
+            <p style="margin-top: 1rem;">No teams have submitted yet</p>
+          </div>
+        `;
+        return;
+      }
+
+      let tableHTML = `
+        <table class="leaderboard-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Team Name</th>
+              <th>Members</th>
+              <th>Score</th>
+              <th>Percentage</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      teams.forEach((team, idx) => {
+        const rank = idx + 1;
+        const percentage = parseFloat(team.percentage);
+        let scoreClass = 'score-low';
+
+        if (percentage >= 90) scoreClass = 'score-excellent';
+        else if (percentage >= 70) scoreClass = 'score-good';
+        else if (percentage >= 50) scoreClass = 'score-average';
+
+        const rankIcon = rank === 1 ? '👑' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+
+        tableHTML += `
+          <tr>
+            <td class="rank-number">${rankIcon}</td>
+            <td>
+              <strong style="color: var(--primary); font-size: 1.1rem;">
+                ${team.teamName}
+              </strong>
+            </td>
+            <td>
+              <div style="display: flex; flex-wrap: wrap; gap: 0.3rem;">
+                ${team.teamMembers.map(member => `
+                  <span style="background: var(--light); padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.85rem;">
+                    ${member}
+                  </span>
+                `).join('')}
+              </div>
+            </td>
+            <td>
+              <strong>${team.score}</strong> / ${team.totalPoints}
+            </td>
+            <td>
+              <span class="score-badge ${scoreClass}">
+                ${team.percentage}%
+              </span>
+            </td>
+            <td>
+              ${team.manualGradingNeeded ? `
+                <span style="color: var(--warning);">
+                  <i class="fas fa-clock"></i> Pending
+                </span>
+              ` : `
+                <span style="color: var(--success);">
+                  <i class="fas fa-check-circle"></i> Complete
+                </span>
+              `}
+            </td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+
+      content.innerHTML = tableHTML;
+    }
+  </script>
+</body>
+</html>

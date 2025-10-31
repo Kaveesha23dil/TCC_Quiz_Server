@@ -1,0 +1,337 @@
+{
+  "achievements": [
+    {
+      "id": "first_steps",
+      "name": "First Steps",
+      "description": "Complete your first quiz",
+      "icon": "🎯",
+      "criteria": {
+        "type": "quiz_completion",
+        "value": 1
+      },
+      "xpReward": 50,
+      "tier": "bronze"
+    },
+    {
+      "id": "perfect_score",
+      "name": "Perfect Score",
+      "description": "Score 100% on any quiz",
+      "icon": "💯",
+      "criteria": {
+        "type": "perfect_score",
+        "value": 100
+      },
+      "xpReward": 200,
+      "tier": "gold"
+    },
+    {
+      "id": "speed_demon",
+      "name": "Speed Demon",
+      "description": "Complete a quiz in under 5 minutes",
+      "icon": "⚡",
+      "criteria": {
+        "type": "completion_time",
+        "value": 300
+      },
+      "xpReward": 150,
+      "tier": "silver"
+    },
+    {
+      "id": "streak_3",
+      "name": "On Fire",
+      "description": "Score above 80% on 3 consecutive quizzes",
+      "icon": "🔥",
+      "criteria": {
+        "type": "score_streak",
+        "threshold": 80,
+        "count": 3
+      },
+      "xpReward": 175,
+      "tier": "silver"
+    },
+    {
+      "id": "streak_5",
+      "name": "Unstoppable",
+      "description": "Score above 80% on 5 consecutive quizzes",
+      "icon": "🌟",
+      "criteria": {
+        "type": "score_streak",
+        "threshold": 80,
+        "count": 5
+      },
+      "xpReward": 300,
+      "tier": "gold"
+    },
+    {
+      "id": "streak_10",
+      "name": "Legend",
+      "description": "Score above 80% on 10 consecutive quizzes",
+      "icon": "👑",
+      "criteria": {
+        "type": "score_streak",
+        "threshold": 80,
+        "count": 10
+      },
+      "xpReward": 500,
+      "tier": "platinum"
+    },
+    {
+      "id": "ace_student",
+      "name": "Ace Student",
+      "description": "Score above 90% on 5 quizzes",
+      "icon": "📚",
+      "criteria": {
+        "type": "high_score_count",
+        "threshold": 90,
+        "count": 5
+      },
+      "xpReward": 250,
+      "tier": "gold"
+    },
+    {
+      "id": "quiz_master",
+      "name": "Quiz Master",
+      "description": "Complete 10 quizzes",
+      "icon": "🎓",
+      "criteria": {
+        "type": "quiz_completion",
+        "value": 10
+      },
+      "xpReward": 300,
+      "tier": "gold"
+    },
+    {
+      "id": "quiz_veteran",
+      "name": "Quiz Veteran",
+      "description": "Complete 25 quizzes",
+      "icon": "🏆",
+      "criteria": {
+        "type": "quiz_completion",
+        "value": 25
+      },
+      "xpReward": 500,
+      "tier": "platinum"
+    },
+    {
+      "id": "no_mistakes",
+      "name": "Flawless Victory",
+      "description": "Answer all questions correctly without skipping",
+      "icon": "💎",
+      "criteria": {
+        "type": "perfect_no_skip",
+        "value": true
+      },
+      "xpReward": 250,
+      "tier": "platinum"
+    },
+    {
+      "id": "early_bird",
+      "name": "Early Bird",
+      "description": "Be among the first 3 to complete a quiz",
+      "icon": "🐦",
+      "criteria": {
+        "type": "completion_rank",
+        "value": 3
+      },
+      "xpReward": 100,
+      "tier": "silver"
+    },
+    {
+      "id": "comeback_kid",
+      "name": "Comeback Kid",
+      "description": "Score 90%+ after previously scoring below 70%",
+      "icon": "📈",
+      "criteria": {
+        "type": "improvement",
+        "fromThreshold": 70,
+        "toThreshold": 90
+      },
+      "xpReward": 200,
+      "tier": "gold"
+    }
+  ],
+  "tiers": [
+    {
+      "id": "beginner",
+      "name": "Beginner",
+      "icon": "🌱",
+      "minXP": 0,
+      "maxXP": 499,
+      "color": "#95a5a6",
+      "benefits": "Just getting started"
+    },
+    {
+      "id": "novice",
+      "name": "Novice",
+      "icon": "📖",
+      "minXP": 500,
+      "maxXP": 999,
+      "color": "#3498db",
+      "benefits": "Building knowledge"
+    },
+    {
+      "id": "apprentice",
+      "name": "Apprentice",
+      "icon": "🎯",
+      "minXP": 1000,
+      "maxXP": 1999,
+      "color": "#9b59b6",
+      "benefits": "Making progress"
+    },
+    {
+      "id": "scholar",
+      "name": "Scholar",
+      "icon": "📚",
+      "minXP": 2000,
+      "maxXP": 3499,
+      "color": "#1abc9c",
+      "benefits": "Consistent performer"
+    },
+    {
+      "id": "expert",
+      "name": "Expert",
+      "icon": "⭐",
+      "minXP": 3500,
+      "maxXP": 5499,
+      "color": "#f39c12",
+      "benefits": "High achiever"
+    },
+    {
+      "id": "master",
+      "name": "Master",
+      "icon": "🏅",
+      "minXP": 5500,
+      "maxXP": 7999,
+      "color": "#e67e22",
+      "benefits": "Elite status"
+    },
+    {
+      "id": "grandmaster",
+      "name": "Grandmaster",
+      "icon": "🏆",
+      "minXP": 8000,
+      "maxXP": 11999,
+      "color": "#e74c3c",
+      "benefits": "Among the best"
+    },
+    {
+      "id": "legend",
+      "name": "Legend",
+      "icon": "👑",
+      "minXP": 12000,
+      "maxXP": 999999,
+      "color": "#FFD700",
+      "benefits": "Top of the class"
+    }
+  ],
+  "xpSources": {
+    "quiz_completion": {
+      "baseXP": 100,
+      "description": "Awarded for completing any quiz"
+    },
+    "correct_answer": {
+      "baseXP": 10,
+      "description": "Awarded per correct answer"
+    },
+    "score_bonus": {
+      "ranges": [
+        {"min": 70, "max": 79, "multiplier": 1.1, "bonus": 20},
+        {"min": 80, "max": 89, "multiplier": 1.25, "bonus": 50},
+        {"min": 90, "max": 99, "multiplier": 1.5, "bonus": 100},
+        {"min": 100, "max": 100, "multiplier": 2.0, "bonus": 200}
+      ],
+      "description": "Bonus XP based on final score percentage"
+    },
+    "speed_bonus": {
+      "formula": "max(0, 50 - (completionTime / 60))",
+      "maxBonus": 50,
+      "description": "Bonus XP for completing quickly"
+    },
+    "first_attempt_bonus": {
+      "baseXP": 25,
+      "description": "Extra XP for passing on first attempt"
+    }
+  },
+  "dataModels": {
+    "userProfile": {
+      "description": "Persistent user profile with XP and achievements",
+      "schema": {
+        "userId": "UUID - unique identifier",
+        "userName": "string - display name",
+        "totalXP": "number - lifetime XP earned",
+        "currentTier": "string - current tier ID",
+        "quizzesCompleted": "number - total quizzes completed",
+        "averageScore": "number - average score across all quizzes",
+        "bestScore": "number - highest score achieved",
+        "currentStreak": "number - current consecutive high scores",
+        "bestStreak": "number - best streak achieved",
+        "achievements": [
+          {
+            "achievementId": "string - achievement ID",
+            "unlockedAt": "ISO8601 - when unlocked",
+            "progress": "number - current progress (0-100)"
+          }
+        ],
+        "quizHistory": [
+          {
+            "quizName": "string",
+            "score": "number",
+            "percentage": "number",
+            "xpEarned": "number",
+            "completedAt": "ISO8601",
+            "rank": "number - position in that quiz",
+            "timeTaken": "number - seconds"
+          }
+        ],
+        "createdAt": "ISO8601",
+        "lastActive": "ISO8601"
+      }
+    },
+    "leaderboardEntry": {
+      "description": "Real-time leaderboard entry",
+      "schema": {
+        "userId": "UUID",
+        "userName": "string",
+        "totalXP": "number",
+        "currentTier": "string",
+        "rank": "number - overall rank",
+        "quizzesCompleted": "number",
+        "averageScore": "number",
+        "recentAchievements": "array - last 3 achievements",
+        "badges": "array - visible badges to display",
+        "lastUpdated": "ISO8601"
+      }
+    },
+    "quizLeaderboard": {
+      "description": "Per-quiz leaderboard for active/ongoing quiz",
+      "schema": {
+        "quizName": "string",
+        "entries": [
+          {
+            "userId": "UUID",
+            "userName": "string",
+            "score": "number",
+            "percentage": "number",
+            "rank": "number",
+            "timeTaken": "number - seconds",
+            "completedAt": "ISO8601",
+            "isTeam": "boolean",
+            "teamName": "string - if team submission"
+          }
+        ],
+        "updatedAt": "ISO8601"
+      }
+    },
+    "achievementProgress": {
+      "description": "Tracks progress toward achievements",
+      "schema": {
+        "userId": "UUID",
+        "achievementId": "string",
+        "currentValue": "number - current progress value",
+        "targetValue": "number - value needed to unlock",
+        "percentage": "number - progress percentage",
+        "lastUpdated": "ISO8601"
+      }
+    }
+  }
+}

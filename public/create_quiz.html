@@ -1,0 +1,1546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Quiz - QuizServer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Animated background */
+    .bg-animation {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      animation: float 15s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateY(-100px) translateX(50px) rotate(180deg);
+        opacity: 0.7;
+      }
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Header */
+    .header {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      margin-bottom: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      position: relative;
+      overflow: hidden;
+      animation: fadeInDown 0.6s ease-out;
+    }
+
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      color: white;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      padding: 0.7rem 1.5rem;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateX(-5px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.9);
+      font-weight: 400;
+    }
+
+    /* Content sections */
+    .section {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      animation: fadeInUp 0.6s ease-out backwards;
+    }
+
+    .section:nth-child(2) { animation-delay: 0.1s; }
+    .section:nth-child(3) { animation-delay: 0.2s; }
+    .section:nth-child(4) { animation-delay: 0.3s; }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: white;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Form elements */
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: white;
+      font-size: 0.95rem;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    }
+
+    label i {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 1rem 1.3rem;
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(255, 255, 255, 0.4);
+      border-radius: 12px;
+      font-size: 1rem;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      color: #333;
+      font-weight: 500;
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      background: white;
+      border-color: #667eea;
+      box-shadow: 0 6px 30px rgba(102, 126, 234, 0.3), 0 0 0 4px rgba(102, 126, 234, 0.1);
+      transform: translateY(-2px);
+    }
+
+    input[type="text"]::placeholder,
+    textarea::placeholder {
+      color: #999;
+      font-weight: 400;
+    }
+
+    /* Special styling for question text input */
+    .q-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      border-width: 3px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
+    }
+
+    .q-text:focus {
+      border-color: #764ba2;
+      box-shadow: 0 8px 35px rgba(118, 75, 162, 0.4), 0 0 0 5px rgba(118, 75, 162, 0.15);
+    }
+
+    /* Checkbox styling */
+    .checkbox-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    .checkbox-label {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: white;
+      font-weight: 500;
+    }
+
+    .checkbox-label:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateX(3px);
+    }
+
+    .checkbox-label input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+
+    /* Settings grid */
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+    }
+
+    /* Question card */
+    .question {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0.08) 100%);
+      backdrop-filter: blur(15px);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      animation: slideIn 0.5s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    .question:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .question:hover {
+      border-color: rgba(255, 255, 255, 0.5);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+      transform: translateY(-5px);
+    }
+
+    .question-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.25);
+      position: relative;
+    }
+
+    .question-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 100px;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.6), transparent);
+      animation: shimmer 2s ease-in-out infinite;
+    }
+
+    @keyframes shimmer {
+      0%, 100% {
+        transform: translateX(0);
+        opacity: 0.6;
+      }
+      50% {
+        transform: translateX(200px);
+        opacity: 0;
+      }
+    }
+
+    .question-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .question-title i {
+      font-size: 1.5rem;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .points-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: linear-gradient(135deg, rgba(255, 215, 0, 0.25) 0%, rgba(255, 165, 0, 0.25) 100%);
+      backdrop-filter: blur(10px);
+      padding: 0.6rem 1.2rem;
+      border-radius: 25px;
+      color: #ffd700;
+      font-weight: 700;
+      border: 2px solid rgba(255, 215, 0, 0.4);
+      box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .points-badge:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+    }
+
+    .points-badge i {
+      font-size: 1.1rem;
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+    }
+
+    .points-input {
+      width: 55px;
+      padding: 0.3rem 0.5rem;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.2);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+    }
+
+    .points-input:focus {
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 215, 0, 0.6);
+      outline: none;
+      transform: scale(1.1);
+    }
+
+    /* Option container styling */
+    .option-container {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      border-radius: 15px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .option-container:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.35);
+      transform: translateX(5px);
+    }
+
+    .option-label-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 35px;
+      height: 35px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 50%;
+      color: white;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 0.75rem;
+      box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .option-input-wrapper {
+      position: relative;
+    }
+
+    .option-input-wrapper input[type="text"] {
+      padding-left: 1rem;
+      border-left: 4px solid rgba(102, 126, 234, 0.5);
+      transition: all 0.3s ease;
+    }
+
+    .option-input-wrapper input[type="text"]:focus {
+      border-left-color: #667eea;
+      padding-left: 1.2rem;
+    }
+
+    .image-upload-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .image-upload-label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-custom {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.2rem;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px dashed rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9rem;
+    }
+
+    .file-input-custom:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: scale(1.02);
+    }
+
+    .file-input-custom i {
+      font-size: 1.1rem;
+    }
+
+    input[type="file"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .correct-answer-section {
+      background: linear-gradient(135deg, rgba(17, 153, 142, 0.15) 0%, rgba(56, 239, 125, 0.15) 100%);
+      border: 2px solid rgba(56, 239, 125, 0.3);
+      border-radius: 15px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+
+    .correct-answer-section label {
+      color: #38ef7d;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .correct-answer-section select,
+    .correct-answer-section input {
+      border: 2px solid rgba(56, 239, 125, 0.3);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    .correct-answer-section select:focus,
+    .correct-answer-section input:focus {
+      border-color: #38ef7d;
+      box-shadow: 0 4px 20px rgba(56, 239, 125, 0.2);
+    }
+
+    /* Question type select enhancement */
+    .q-type {
+      background: rgba(255, 255, 255, 0.95);
+      border: 2px solid rgba(102, 126, 234, 0.3);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .q-type:focus {
+      border-color: #667eea;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.2);
+    }
+
+    /* Explanation section styling */
+    .explanation-section {
+      background: rgba(255, 193, 7, 0.1);
+      border: 2px solid rgba(255, 193, 7, 0.25);
+      border-radius: 15px;
+      padding: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .explanation-section label {
+      color: #ffd54f;
+      font-weight: 700;
+    }
+
+    .explanation-section textarea {
+      border: 2px solid rgba(255, 193, 7, 0.3);
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .explanation-section textarea:focus {
+      border-color: #ffc107;
+      box-shadow: 0 4px 20px rgba(255, 193, 7, 0.2);
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 0.9rem 2rem;
+      border: none;
+      border-radius: 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn:hover::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+      color: white;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 10px 30px rgba(17, 153, 142, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-success:active {
+      transform: translateY(-2px) scale(0.98);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ee0979 0%, #ff6a00 100%);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.9rem;
+      border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-danger:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 25px rgba(238, 9, 121, 0.5);
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .btn-danger:active {
+      transform: scale(1.02);
+    }
+
+    .btn i {
+      position: relative;
+      z-index: 1;
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .buttons-container {
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    /* Question counter */
+    .question-counter {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(20px);
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 50px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      font-weight: 700;
+      font-size: 1.1rem;
+      z-index: 100;
+      animation: pulse 2s ease-in-out infinite;
+      display: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+    }
+
+    /* Image preview */
+    .option-image-preview {
+      max-width: 200px;
+      max-height: 200px;
+      margin-top: 1rem;
+      border-radius: 15px;
+      border: 3px solid rgba(255, 255, 255, 0.4);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s ease;
+      animation: fadeInScale 0.4s ease-out;
+    }
+
+    @keyframes fadeInScale {
+      from {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .option-image-preview:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .image-preview,
+    .img-preview-a,
+    .img-preview-b,
+    .img-preview-c,
+    .img-preview-d {
+      min-height: 0;
+      transition: all 0.3s ease;
+    }
+
+    /* Info box */
+    .info-box {
+      background: rgba(255, 255, 255, 0.15);
+      border-left: 4px solid rgba(255, 255, 255, 0.5);
+      padding: 1rem;
+      border-radius: 8px;
+      color: white;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      animation: slideInRight 0.3s ease-out;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+    }
+
+    @keyframes slideInRight {
+      from {
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .notification.success {
+      color: #11998e;
+    }
+
+    .notification.error {
+      color: #ee0979;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body {
+        padding: 1rem 0.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .header {
+        padding: 2rem 1.5rem;
+      }
+
+      .section {
+        padding: 1.5rem;
+      }
+
+      .checkbox-group,
+      .settings-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .buttons-container {
+        flex-direction: column;
+      }
+
+      .question-counter {
+        bottom: 1rem;
+        right: 1rem;
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+      }
+    }
+
+    /* Special effects for specific sections */
+    .proctoring-section {
+      background: linear-gradient(135deg, rgba(255, 193, 7, 0.15) 0%, rgba(255, 152, 0, 0.15) 100%);
+      border: 2px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .proctoring-section .section-header {
+      color: #ffd54f;
+    }
+  </style>
+</head>
+<body>
+  <!-- Animated Background -->
+  <div class="bg-animation" id="bg-animation"></div>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="header-content">
+        <button class="back-btn" id="back-button">
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+        <h1>
+          <i class="fas fa-plus-circle"></i>
+          Create New Quiz
+        </h1>
+        <p class="subtitle">Design an engaging quiz with custom settings and advanced features</p>
+      </div>
+    </div>
+
+    <!-- Quiz Title -->
+    <div class="section">
+      <div class="form-group">
+        <label>
+          <i class="fas fa-heading"></i>
+          Quiz Title
+        </label>
+        <input type="text" id="quiz-name" placeholder="Enter an engaging quiz title..." />
+      </div>
+    </div>
+
+    <!-- Quiz Settings -->
+    <div class="section">
+      <div class="section-header">
+        <i class="fas fa-cog"></i>
+        Quiz Settings
+      </div>
+
+      <div class="settings-grid">
+        <div class="form-group">
+          <label>
+            <i class="fas fa-clock"></i>
+            Time Limit Type
+          </label>
+          <select id="time-limit-type" onchange="toggleTimeLimitFields()">
+            <option value="none">No Time Limit</option>
+            <option value="per-quiz">Per Quiz</option>
+            <option value="per-question">Per Question</option>
+          </select>
+        </div>
+
+        <div class="form-group" id="time-limit-input" style="display: none;">
+          <label>
+            <i class="fas fa-hourglass-half"></i>
+            Time Limit (minutes)
+          </label>
+          <input type="number" id="time-limit-value" min="1" placeholder="Enter time in minutes" />
+        </div>
+
+        <div class="form-group">
+          <label>
+            <i class="fas fa-percentage"></i>
+            Passing Score (%)
+          </label>
+          <input type="number" id="passing-score" min="0" max="100" placeholder="e.g., 70" />
+        </div>
+      </div>
+
+      <div class="checkbox-group" style="margin-top: 1.5rem;">
+        <label class="checkbox-label">
+          <input type="checkbox" id="allow-retakes" />
+          <span><i class="fas fa-redo"></i> Allow Quiz Retakes</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="show-correct-answers" checked />
+          <span><i class="fas fa-check-circle"></i> Show Correct Answers</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="prevent-back-nav" />
+          <span><i class="fas fa-lock"></i> Prevent Back Navigation</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="randomize-questions" />
+          <span><i class="fas fa-random"></i> Randomize Questions</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="randomize-options" />
+          <span><i class="fas fa-shuffle"></i> Randomize Options</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Proctoring Settings -->
+    <div class="section proctoring-section">
+      <div class="section-header">
+        <i class="fas fa-shield-alt"></i>
+        Proctoring Settings
+      </div>
+
+      <div class="checkbox-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="enable-proctoring" />
+          <span><i class="fas fa-eye"></i> Enable Proctoring</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="enforce-fullscreen" />
+          <span><i class="fas fa-expand"></i> Enforce Fullscreen</span>
+        </label>
+
+        <label class="checkbox-label">
+          <input type="checkbox" id="prevent-screenshots" />
+          <span><i class="fas fa-ban"></i> Prevent Screenshots</span>
+        </label>
+      </div>
+
+      <div class="info-box">
+        <i class="fas fa-info-circle"></i> <strong>Proctoring tracks:</strong> Tab switches, fullscreen exits, and time per question. Auto-submission after multiple violations.
+      </div>
+    </div>
+
+    <!-- Questions Section -->
+    <div class="section">
+      <div class="section-header">
+        <i class="fas fa-question-circle"></i>
+        Questions
+      </div>
+
+      <div id="questions-container"></div>
+
+      <button class="btn btn-primary" id="add-question" style="
+        font-size: 1.1rem;
+        padding: 1.1rem 2.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        position: relative;
+        overflow: hidden;
+      ">
+        <i class="fas fa-plus-circle"></i>
+        Add Question
+      </button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="buttons-container">
+      <button class="btn btn-success" id="save-quiz">
+        <i class="fas fa-save"></i>
+        Save Quiz
+      </button>
+    </div>
+  </div>
+
+  <!-- Question Counter -->
+  <div class="question-counter" id="question-counter">
+    <i class="fas fa-list-ol"></i>
+    <span id="question-count">0</span> Questions
+  </div>
+
+  <script>
+    const questionsContainer = document.getElementById('questions-container');
+    const addQuestionBtn = document.getElementById('add-question');
+    const saveQuizBtn = document.getElementById('save-quiz');
+    const backButton = document.getElementById('back-button');
+
+    let questionCount = 0;
+
+    // Create particles
+    function createParticles() {
+      const bgAnimation = document.getElementById('bg-animation');
+      const particleCount = 25;
+
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+
+        const size = Math.random() * 50 + 30;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        particle.style.left = `${Math.random() * 100}%`;
+        particle.style.top = `${Math.random() * 100}%`;
+        particle.style.animationDuration = `${Math.random() * 10 + 10}s`;
+        particle.style.animationDelay = `${Math.random() * 5}s`;
+
+        bgAnimation.appendChild(particle);
+      }
+    }
+
+    createParticles();
+
+    // Back button
+    backButton.onclick = () => {
+      window.location.href = 'admin_welcome.html';
+    };
+
+    // Toggle time limit fields
+    window.toggleTimeLimitFields = () => {
+      const timeLimitType = document.getElementById('time-limit-type').value;
+      const timeLimitInput = document.getElementById('time-limit-input');
+      timeLimitInput.style.display = timeLimitType === 'none' ? 'none' : 'block';
+    };
+
+    // Update question counter
+    function updateQuestionCounter() {
+      const counter = document.getElementById('question-counter');
+      const count = document.getElementById('question-count');
+      count.textContent = questionCount;
+      counter.style.display = questionCount > 0 ? 'block' : 'none';
+    }
+
+    // Add question
+    addQuestionBtn.onclick = () => {
+      questionCount++;
+      const qDiv = document.createElement('div');
+      qDiv.className = 'question';
+      qDiv.innerHTML = `
+        <div class="question-header">
+          <div class="question-title">
+            <i class="fas fa-question-circle"></i>
+            Question ${questionCount}
+          </div>
+          <div class="points-badge">
+            <i class="fas fa-star"></i>
+            <input type="number" class="points-input" min="1" value="1" />
+            <span>pts</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-edit"></i> Question Text</label>
+          <input type="text" class="q-text" placeholder="Enter your question here..." />
+        </div>
+
+        <div class="form-group">
+          <label><i class="fas fa-list"></i> Question Type</label>
+          <select class="q-type" onchange="updateQuestionFields(this)">
+            <option value="multiple-choice">📝 Multiple Choice</option>
+            <option value="true-false">✓✗ True/False</option>
+            <option value="multiple-answer">☑ Multiple Answer</option>
+            <option value="fill-blank">📄 Fill in the Blank</option>
+            <option value="image-based">🖼 Image-Based</option>
+            <option value="short-answer">✍ Short Answer</option>
+          </select>
+        </div>
+
+        <div class="question-fields"></div>
+
+        <div class="explanation-section">
+          <div class="form-group">
+            <label><i class="fas fa-lightbulb"></i> Explanation (Optional)</label>
+            <textarea class="q-explanation" rows="3" placeholder="Provide an explanation for the correct answer..."></textarea>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-danger" onclick="deleteQuestion(this)" style="margin-top: 1.5rem;">
+          <i class="fas fa-trash"></i> Delete Question
+        </button>
+      `;
+
+      questionsContainer.appendChild(qDiv);
+      updateQuestionFields(qDiv.querySelector('.q-type'));
+      updateQuestionCounter();
+      qDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    };
+
+    // Delete question
+    window.deleteQuestion = (button) => {
+      if (confirm('Delete this question?')) {
+        button.closest('.question').remove();
+        document.querySelectorAll('.question').forEach((q, idx) => {
+          q.querySelector('.question-title').innerHTML = `<i class="fas fa-question-circle"></i> Question ${idx + 1}`;
+        });
+        questionCount = document.querySelectorAll('.question').length;
+        updateQuestionCounter();
+      }
+    };
+
+    // Update question fields based on type
+    window.updateQuestionFields = (selectElement) => {
+      const qDiv = selectElement.closest('.question');
+      const fieldsContainer = qDiv.querySelector('.question-fields');
+      const type = selectElement.value;
+
+      let fieldsHTML = '';
+
+      switch(type) {
+        case 'multiple-choice':
+          fieldsHTML = `
+            ${['A', 'B', 'C', 'D'].map(opt => `
+              <div class="option-container">
+                <div class="option-label-badge">${opt}</div>
+                <div class="option-input-wrapper">
+                  <input type="text" class="opt opt-${opt.toLowerCase()}" placeholder="Enter option ${opt} text..." />
+                </div>
+                <div class="image-upload-section">
+                  <div class="image-upload-label">
+                    <i class="fas fa-image"></i>
+                    <span>Add image (optional)</span>
+                  </div>
+                  <div class="file-input-wrapper">
+                    <label class="file-input-custom">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <span>Choose Image</span>
+                    </label>
+                    <input type="file" class="opt-img opt-img-${opt.toLowerCase()}" accept="image/*" onchange="previewOptionImage(this, '${opt.toLowerCase()}')" />
+                  </div>
+                  <div class="img-preview-${opt.toLowerCase()}"></div>
+                </div>
+              </div>
+            `).join('')}
+            <div class="correct-answer-section">
+              <label><i class="fas fa-check-circle"></i> Correct Answer</label>
+              <select class="correct">
+                <option value="A">Option A</option>
+                <option value="B">Option B</option>
+                <option value="C">Option C</option>
+                <option value="D">Option D</option>
+              </select>
+            </div>
+          `;
+          break;
+
+        case 'true-false':
+          fieldsHTML = `
+            <div class="correct-answer-section">
+              <label><i class="fas fa-check-circle"></i> Correct Answer</label>
+              <select class="correct">
+                <option value="true">✓ True</option>
+                <option value="false">✗ False</option>
+              </select>
+            </div>
+          `;
+          break;
+
+        case 'multiple-answer':
+          fieldsHTML = `
+            ${['A', 'B', 'C', 'D'].map(opt => `
+              <div class="option-container">
+                <div class="option-label-badge">${opt}</div>
+                <div class="option-input-wrapper">
+                  <input type="text" class="opt opt-${opt.toLowerCase()}" placeholder="Enter option ${opt} text..." />
+                </div>
+                <div class="image-upload-section">
+                  <div class="image-upload-label">
+                    <i class="fas fa-image"></i>
+                    <span>Add image (optional)</span>
+                  </div>
+                  <div class="file-input-wrapper">
+                    <label class="file-input-custom">
+                      <i class="fas fa-cloud-upload-alt"></i>
+                      <span>Choose Image</span>
+                    </label>
+                    <input type="file" class="opt-img opt-img-${opt.toLowerCase()}" accept="image/*" onchange="previewOptionImage(this, '${opt.toLowerCase()}')" />
+                  </div>
+                  <div class="img-preview-${opt.toLowerCase()}"></div>
+                </div>
+              </div>
+            `).join('')}
+            <div class="correct-answer-section">
+              <label><i class="fas fa-check-double"></i> Correct Answers (Select all that apply)</label>
+              <div class="checkbox-group">
+                ${['A', 'B', 'C', 'D'].map(opt => `
+                  <label class="checkbox-label">
+                    <input type="checkbox" class="correct-check" value="${opt}" />
+                    <span><strong>Option ${opt}</strong></span>
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+          `;
+          break;
+
+        case 'fill-blank':
+          fieldsHTML = `
+            <div class="correct-answer-section">
+              <label><i class="fas fa-pencil-alt"></i> Correct Answer</label>
+              <input type="text" class="correct" placeholder="Enter the correct answer..." />
+            </div>
+          `;
+          break;
+
+        case 'image-based':
+          fieldsHTML = `
+            <div class="option-container" style="background: rgba(102, 126, 234, 0.1); border-color: rgba(102, 126, 234, 0.3);">
+              <label style="color: #667eea; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-image"></i>
+                Question Image
+              </label>
+              <div class="file-input-wrapper">
+                <label class="file-input-custom">
+                  <i class="fas fa-cloud-upload-alt"></i>
+                  <span>Upload Question Image</span>
+                </label>
+                <input type="file" class="q-image" accept="image/*" onchange="previewImage(this)" />
+              </div>
+              <div class="image-preview"></div>
+            </div>
+            ${['A', 'B', 'C', 'D'].map(opt => `
+              <div class="option-container">
+                <div class="option-label-badge">${opt}</div>
+                <div class="option-input-wrapper">
+                  <input type="text" class="opt opt-${opt.toLowerCase()}" placeholder="Enter option ${opt} text..." />
+                </div>
+              </div>
+            `).join('')}
+            <div class="correct-answer-section">
+              <label><i class="fas fa-check-circle"></i> Correct Answer</label>
+              <select class="correct">
+                <option value="A">Option A</option>
+                <option value="B">Option B</option>
+                <option value="C">Option C</option>
+                <option value="D">Option D</option>
+              </select>
+            </div>
+          `;
+          break;
+
+        case 'short-answer':
+          fieldsHTML = `
+            <div class="option-container" style="background: rgba(255, 152, 0, 0.1); border-color: rgba(255, 152, 0, 0.3);">
+              <label style="color: #ff9800; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1rem;">
+                <i class="fas fa-pen-fancy"></i>
+                Sample Answer (for reference)
+              </label>
+              <textarea class="sample-answer" rows="4" placeholder="Enter a sample answer that demonstrates what you're looking for..." style="border: 2px solid rgba(255, 152, 0, 0.3);"></textarea>
+              <div class="info-box" style="margin-top: 1rem; background: rgba(255, 152, 0, 0.15); border-left-color: #ff9800;">
+                <i class="fas fa-info-circle"></i> <strong>Note:</strong> Short answer questions require manual grading.
+              </div>
+            </div>
+          `;
+          break;
+      }
+
+      fieldsContainer.innerHTML = fieldsHTML;
+    };
+
+    // Preview images
+    window.previewImage = (input) => {
+      const qDiv = input.closest('.question');
+      const preview = qDiv.querySelector('.image-preview');
+      const label = input.previousElementSibling;
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        const fileName = input.files[0].name;
+
+        // Update button text to show file selected
+        if (label) {
+          label.innerHTML = `<i class="fas fa-check-circle"></i><span>Image Selected: ${fileName.substring(0, 25)}${fileName.length > 25 ? '...' : ''}</span>`;
+          label.style.background = 'rgba(56, 239, 125, 0.2)';
+          label.style.borderColor = 'rgba(56, 239, 125, 0.5)';
+          label.style.color = '#38ef7d';
+        }
+
+        reader.onload = (e) => {
+          preview.innerHTML = `<img src="${e.target.result}" class="option-image-preview" />`;
+          input.dataset.imageData = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    window.previewOptionImage = (input, optionKey) => {
+      const qDiv = input.closest('.question');
+      const preview = qDiv.querySelector(`.img-preview-${optionKey}`);
+      const label = input.previousElementSibling;
+
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        const fileName = input.files[0].name;
+
+        // Update button text to show file selected
+        if (label) {
+          label.innerHTML = `<i class="fas fa-check-circle"></i><span>Image Selected: ${fileName.substring(0, 20)}${fileName.length > 20 ? '...' : ''}</span>`;
+          label.style.background = 'rgba(56, 239, 125, 0.2)';
+          label.style.borderColor = 'rgba(56, 239, 125, 0.5)';
+          label.style.color = '#38ef7d';
+        }
+
+        reader.onload = (e) => {
+          preview.innerHTML = `<img src="${e.target.result}" class="option-image-preview" />`;
+          input.dataset.imageData = e.target.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    };
+
+    // Save quiz
+    saveQuizBtn.onclick = () => {
+      const quizData = {
+        name: document.getElementById('quiz-name').value.trim(),
+        settings: {
+          timeLimitType: document.getElementById('time-limit-type').value,
+          timeLimitValue: parseInt(document.getElementById('time-limit-value').value) || 0,
+          passingScore: parseInt(document.getElementById('passing-score').value) || 0,
+          allowRetakes: document.getElementById('allow-retakes').checked,
+          showCorrectAnswers: document.getElementById('show-correct-answers').checked,
+          preventBackNav: document.getElementById('prevent-back-nav').checked,
+          randomizeQuestions: document.getElementById('randomize-questions').checked,
+          randomizeOptions: document.getElementById('randomize-options').checked,
+          enableProctoring: document.getElementById('enable-proctoring').checked,
+          enforceFullscreen: document.getElementById('enforce-fullscreen').checked,
+          preventScreenshots: document.getElementById('prevent-screenshots').checked
+        },
+        questions: [...document.querySelectorAll('.question')].map((qBlock) => {
+          const qType = qBlock.querySelector('.q-type').value;
+          const questionData = {
+            question: qBlock.querySelector('.q-text').value.trim(),
+            type: qType,
+            points: parseInt(qBlock.querySelector('.points-input').value) || 1,
+            explanation: qBlock.querySelector('.q-explanation').value.trim()
+          };
+
+          switch(qType) {
+            case 'multiple-choice':
+              questionData.options = {
+                A: qBlock.querySelector('.opt-a').value.trim(),
+                B: qBlock.querySelector('.opt-b').value.trim(),
+                C: qBlock.querySelector('.opt-c').value.trim(),
+                D: qBlock.querySelector('.opt-d').value.trim()
+              };
+              questionData.optionImages = {
+                A: qBlock.querySelector('.opt-img-a')?.dataset.imageData || '',
+                B: qBlock.querySelector('.opt-img-b')?.dataset.imageData || '',
+                C: qBlock.querySelector('.opt-img-c')?.dataset.imageData || '',
+                D: qBlock.querySelector('.opt-img-d')?.dataset.imageData || ''
+              };
+              questionData.correct = qBlock.querySelector('.correct').value;
+              break;
+
+            case 'true-false':
+              questionData.options = { true: 'True', false: 'False' };
+              questionData.correct = qBlock.querySelector('.correct').value;
+              break;
+
+            case 'multiple-answer':
+              questionData.options = {
+                A: qBlock.querySelector('.opt-a').value.trim(),
+                B: qBlock.querySelector('.opt-b').value.trim(),
+                C: qBlock.querySelector('.opt-c').value.trim(),
+                D: qBlock.querySelector('.opt-d').value.trim()
+              };
+              questionData.optionImages = {
+                A: qBlock.querySelector('.opt-img-a')?.dataset.imageData || '',
+                B: qBlock.querySelector('.opt-img-b')?.dataset.imageData || '',
+                C: qBlock.querySelector('.opt-img-c')?.dataset.imageData || '',
+                D: qBlock.querySelector('.opt-img-d')?.dataset.imageData || ''
+              };
+              questionData.correct = Array.from(qBlock.querySelectorAll('.correct-check:checked')).map(cb => cb.value);
+              break;
+
+            case 'fill-blank':
+              questionData.correct = qBlock.querySelector('.correct').value.trim();
+              break;
+
+            case 'image-based':
+              questionData.image = qBlock.querySelector('.q-image')?.dataset.imageData || '';
+              questionData.options = {
+                A: qBlock.querySelector('.opt-a').value.trim(),
+                B: qBlock.querySelector('.opt-b').value.trim(),
+                C: qBlock.querySelector('.opt-c').value.trim(),
+                D: qBlock.querySelector('.opt-d').value.trim()
+              };
+              questionData.correct = qBlock.querySelector('.correct').value;
+              break;
+
+            case 'short-answer':
+              questionData.sampleAnswer = qBlock.querySelector('.sample-answer').value.trim();
+              questionData.requiresManualGrading = true;
+              break;
+          }
+
+          return questionData;
+        })
+      };
+
+      if (!quizData.name || quizData.questions.length === 0) {
+        showNotification('Please enter quiz name and add at least one question', 'error');
+        return;
+      }
+
+      // Validation
+      for (let i = 0; i < quizData.questions.length; i++) {
+        const q = quizData.questions[i];
+        if (!q.question) {
+          showNotification(`Question ${i + 1}: Please enter the question text`, 'error');
+          return;
+        }
+
+        if (['multiple-choice', 'image-based', 'multiple-answer'].includes(q.type)) {
+          if (!q.options.A || !q.options.B || !q.options.C || !q.options.D) {
+            showNotification(`Question ${i + 1}: Please fill in all options`, 'error');
+            return;
+          }
+        }
+
+        if (q.type === 'multiple-answer' && (!q.correct || q.correct.length === 0)) {
+          showNotification(`Question ${i + 1}: Please select at least one correct answer`, 'error');
+          return;
+        }
+
+        if (q.type === 'fill-blank' && !q.correct) {
+          showNotification(`Question ${i + 1}: Please enter the correct answer`, 'error');
+          return;
+        }
+      }
+
+      // Save with loading state
+      saveQuizBtn.disabled = true;
+      const originalHTML = saveQuizBtn.innerHTML;
+      saveQuizBtn.innerHTML = '<span class="spinner"></span> Saving...';
+
+      try {
+        window.electronAPI.saveQuiz(quizData);
+        saveQuizBtn.innerHTML = '<i class="fas fa-check-circle"></i> Saved!';
+        showNotification('Quiz saved successfully!', 'success');
+
+        setTimeout(() => {
+          saveQuizBtn.innerHTML = originalHTML;
+          saveQuizBtn.disabled = false;
+        }, 2000);
+      } catch (error) {
+        saveQuizBtn.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed';
+        showNotification('Failed to save quiz', 'error');
+
+        setTimeout(() => {
+          saveQuizBtn.innerHTML = originalHTML;
+          saveQuizBtn.disabled = false;
+        }, 2000);
+      }
+    };
+
+    // Show notification
+    function showNotification(message, type = 'info') {
+      const notification = document.createElement('div');
+      notification.className = `notification ${type}`;
+      notification.innerHTML = `
+        <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+        ${message}
+      `;
+
+      document.body.appendChild(notification);
+
+      setTimeout(() => {
+        notification.style.animation = 'slideInRight 0.3s ease-out reverse';
+        setTimeout(() => notification.remove(), 300);
+      }, 3000);
+    }
+  </script>
+</body>
+</html>

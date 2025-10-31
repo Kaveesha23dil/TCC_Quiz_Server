@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Results & Manual Grading</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root {
+      --primary: #6c5ce7;
+      --secondary: #00cec9;
+      --success: #2ecc71;
+      --danger: #e74c3c;
+      --warning: #f39c12;
+      --light: #f8f9fa;
+      --dark: #2d3436;
+      --gray: #dfe6e9;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: var(--primary);
+      text-align: center;
+      margin-bottom: 2rem;
+      font-size: 2rem;
+    }
+
+    .back-btn {
+      background: #6c757d;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      transition: background 0.3s;
+    }
+
+    .back-btn:hover {
+      background: #5a6268;
+    }
+
+    .quiz-selector {
+      margin-bottom: 2rem;
+    }
+
+    .quiz-selector select {
+      width: 100%;
+      padding: 0.8rem;
+      border: 2px solid var(--gray);
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--light);
+      padding: 1rem;
+      border-radius: 8px;
+      text-align: center;
+      border-left: 4px solid var(--primary);
+    }
+
+    .stat-card h3 {
+      font-size: 0.9rem;
+      color: var(--dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: var(--primary);
+    }
+
+    .result-card {
+      background: var(--light);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary);
+    }
+
+    .result-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid var(--gray);
+    }
+
+    .student-name {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .score-badge {
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .score-high { background: var(--success); }
+    .score-medium { background: var(--warning); }
+    .score-low { background: var(--danger); }
+
+    .question-review {
+      background: white;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--gray);
+    }
+
+    .question-text {
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .answer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem;
+      margin: 0.5rem 0;
+      background: var(--light);
+      border-radius: 6px;
+    }
+
+    .correct-icon {
+      color: var(--success);
+      font-size: 1.2rem;
+    }
+
+    .incorrect-icon {
+      color: var(--danger);
+      font-size: 1.2rem;
+    }
+
+    .manual-grade-section {
+      background: #fff3cd;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-top: 0.5rem;
+      border: 1px solid #ffc107;
+    }
+
+    .manual-grade-section h4 {
+      color: #856404;
+      margin-bottom: 0.5rem;
+    }
+
+    .short-answer-display {
+      background: white;
+      padding: 1rem;
+      border-radius: 6px;
+      margin-bottom: 0.5rem;
+      font-style: italic;
+      white-space: pre-wrap;
+    }
+
+    .grade-controls {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .grade-controls button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      color: white;
+      transition: all 0.3s;
+    }
+
+    .btn-correct {
+      background: var(--success);
+    }
+
+    .btn-correct:hover {
+      background: #27ae60;
+    }
+
+    .btn-incorrect {
+      background: var(--danger);
+    }
+
+    .btn-incorrect:hover {
+      background: #c0392b;
+    }
+
+    .graded {
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 3rem;
+      color: var(--gray);
+    }
+
+    .no-results i {
+      font-size: 4rem;
+      margin-bottom: 1rem;
+    }
+
+    .export-btn {
+      background: var(--secondary);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      float: right;
+      transition: background 0.3s;
+    }
+
+    .export-btn:hover {
+      background: #00b4a8;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='admin_welcome.html'">
+      <i class="fas fa-arrow-left"></i> Back to Admin
+    </button>
+
+    <h1><i class="fas fa-chart-bar"></i> Quiz Results & Manual Grading</h1>
+
+    <div class="quiz-selector">
+      <label for="quiz-select"><strong>Select Quiz to View Results:</strong></label>
+      <select id="quiz-select">
+        <option value="">Loading quizzes...</option>
+      </select>
+    </div>
+
+    <button class="export-btn" id="export-btn" style="display:none;">
+      <i class="fas fa-download"></i> Export Results (CSV)
+    </button>
+
+    <div id="stats-container" style="display:none;">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <h3>Total Submissions</h3>
+          <div class="value" id="total-submissions">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Average Score</h3>
+          <div class="value" id="avg-score">0%</div>
+        </div>
+        <div class="stat-card">
+          <h3>Highest Score</h3>
+          <div class="value" id="highest-score">0</div>
+        </div>
+        <div class="stat-card">
+          <h3>Pending Grading</h3>
+          <div class="value" id="pending-grading">0</div>
+        </div>
+      </div>
+    </div>
+
+    <div id="results-container"></div>
+  </div>
+
+  <script>
+    const quizSelect = document.getElementById('quiz-select');
+    const resultsContainer = document.getElementById('results-container');
+    const statsContainer = document.getElementById('stats-container');
+    const exportBtn = document.getElementById('export-btn');
+
+    let currentQuizData = null;
+
+    // Load available quizzes
+    window.electronAPI.getQuizzes().then(files => {
+      quizSelect.innerHTML = '<option value="">Select a quiz</option>';
+
+      files.forEach(file => {
+        const option = document.createElement('option');
+        option.value = file;
+        option.textContent = file.replace('.json', '').replace(/_/g, ' ');
+        quizSelect.appendChild(option);
+      });
+    });
+
+    // Load quiz results when selected
+    quizSelect.addEventListener('change', async (e) => {
+      const quizFile = e.target.value;
+      if (!quizFile) {
+        resultsContainer.innerHTML = '';
+        statsContainer.style.display = 'none';
+        exportBtn.style.display = 'none';
+        return;
+      }
+
+      resultsContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Loading results...</div>';
+
+      try {
+        const response = await fetch(`/api/quiz-results/${quizFile}`);
+        const quizData = await response.json();
+        currentQuizData = quizData;
+
+        displayResults(quizData);
+        displayStats(quizData);
+        statsContainer.style.display = 'block';
+        exportBtn.style.display = 'block';
+      } catch (error) {
+        resultsContainer.innerHTML = '<div class="no-results"><i class="fas fa-exclamation-triangle"></i><p>Failed to load results</p></div>';
+      }
+    });
+
+    function displayStats(quizData) {
+      const results = quizData.results || [];
+
+      if (results.length === 0) {
+        statsContainer.style.display = 'none';
+        return;
+      }
+
+      const totalSubmissions = results.length;
+      const scores = results.map(r => (r.score / r.totalGraded) * 100);
+      const avgScore = (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1);
+      const highestScore = Math.max(...scores).toFixed(1);
+      const pendingGrading = results.filter(r => r.manualGradingNeeded).length;
+
+      document.getElementById('total-submissions').textContent = totalSubmissions;
+      document.getElementById('avg-score').textContent = avgScore + '%';
+      document.getElementById('highest-score').textContent = highestScore + '%';
+      document.getElementById('pending-grading').textContent = pendingGrading;
+    }
+
+    function displayResults(quizData) {
+      const results = quizData.results || [];
+
+      if (results.length === 0) {
+        resultsContainer.innerHTML = '<div class="no-results"><i class="fas fa-inbox"></i><p>No submissions yet</p></div>';
+        return;
+      }
+
+      resultsContainer.innerHTML = '';
+
+      results.forEach((result, resultIndex) => {
+        const percentage = (result.score / result.totalGraded) * 100;
+        let scoreClass = 'score-low';
+        if (percentage >= 70) scoreClass = 'score-high';
+        else if (percentage >= 50) scoreClass = 'score-medium';
+
+        const resultCard = document.createElement('div');
+        resultCard.className = 'result-card';
+
+        let manualGradingBadge = '';
+        if (result.manualGradingNeeded) {
+          manualGradingBadge = '<span style="background: #ffc107; color: #856404; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.8rem; margin-left: 0.5rem;"><i class="fas fa-clock"></i> Needs Grading</span>';
+        }
+
+        resultCard.innerHTML = `
+          <div class="result-header">
+            <div class="student-name">
+              <i class="fas fa-user"></i> ${result.participantName || 'Anonymous'}
+              ${manualGradingBadge}
+            </div>
+            <div class="score-badge ${scoreClass}">
+              ${result.score} / ${result.totalGraded} (${percentage.toFixed(1)}%)
+            </div>
+          </div>
+          <div class="questions-review" id="questions-${resultIndex}"></div>
+        `;
+
+        resultsContainer.appendChild(resultCard);
+
+        // Display detailed question results
+        const questionsReview = document.getElementById(`questions-${resultIndex}`);
+
+        result.detailedResults.forEach((detail, qIndex) => {
+          const question = quizData.questions[detail.questionIndex];
+          const questionDiv = document.createElement('div');
+          questionDiv.className = 'question-review';
+
+          let answerDisplay = '';
+
+          if (detail.needsManualGrading) {
+            // Short answer - needs manual grading
+            answerDisplay = `
+              <div class="manual-grade-section">
+                <h4><i class="fas fa-edit"></i> Short Answer (Manual Grading Required)</h4>
+                <div class="short-answer-display">${detail.studentAnswer || '<em>No answer provided</em>'}</div>
+                ${question.sampleAnswer ? `<p><strong>Sample Answer:</strong> ${question.sampleAnswer}</p>` : ''}
+                <div class="grade-controls">
+                  <button class="btn-correct" onclick="gradeShortAnswer(${resultIndex}, ${qIndex}, true)">
+                    <i class="fas fa-check"></i> Mark Correct
+                  </button>
+                  <button class="btn-incorrect" onclick="gradeShortAnswer(${resultIndex}, ${qIndex}, false)">
+                    <i class="fas fa-times"></i> Mark Incorrect
+                  </button>
+                </div>
+              </div>
+            `;
+          } else {
+            // Auto-graded question
+            const icon = detail.isCorrect
+              ? '<i class="fas fa-check-circle correct-icon"></i>'
+              : '<i class="fas fa-times-circle incorrect-icon"></i>';
+
+            let answerText = '';
+            if (question.type === 'multiple-answer') {
+              answerText = `Answer: ${Array.isArray(detail.studentAnswer) ? detail.studentAnswer.join(', ') : 'No answer'}`;
+            } else if (question.type === 'fill-blank') {
+              answerText = `Answer: "${detail.studentAnswer || 'No answer'}" (Correct: "${question.correct}")`;
+            } else {
+              answerText = `Answer: ${detail.studentAnswer || 'No answer'}`;
+            }
+
+            answerDisplay = `
+              <div class="answer-row">
+                <span>${answerText}</span>
+                ${icon}
+              </div>
+            `;
+          }
+
+          questionDiv.innerHTML = `
+            <div class="question-text">Q${qIndex + 1}: ${question.question}</div>
+            ${answerDisplay}
+          `;
+
+          questionsReview.appendChild(questionDiv);
+        });
+      });
+    }
+
+    // Manual grading function
+    window.gradeShortAnswer = async function(resultIndex, questionIndex, isCorrect) {
+      const quizFile = quizSelect.value;
+      if (!quizFile) return;
+
+      try {
+        const response = await fetch('/api/grade-short-answer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            quizFile,
+            resultIndex,
+            questionIndex,
+            isCorrect
+          })
+        });
+
+        if (response.ok) {
+          // Reload results
+          quizSelect.dispatchEvent(new Event('change'));
+          alert('Graded successfully!');
+        } else {
+          alert('Failed to save grade');
+        }
+      } catch (error) {
+        alert('Error saving grade');
+      }
+    };
+
+    // Export to CSV
+    exportBtn.addEventListener('click', () => {
+      if (!currentQuizData) return;
+
+      const csv = generateCSV(currentQuizData);
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `quiz_results_${Date.now()}.csv`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+    });
+
+    function generateCSV(quizData) {
+      const headers = ['Student Name', 'Score', 'Total', 'Percentage', 'Timestamp'];
+      const rows = quizData.results.map(r => [
+        r.participantName || 'Anonymous',
+        r.score,
+        r.totalGraded,
+        ((r.score / r.totalGraded) * 100).toFixed(1) + '%',
+        new Date(r.timestamp).toLocaleString()
+      ]);
+
+      return [headers, ...rows].map(row => row.join(',')).join('\n');
+    }
+  </script>
+</body>
+</html>
