@@ -4,6 +4,7 @@ const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 const AchievementManager = require('./achievement-manager');
 const plagiarismDetector = require('./plagiarism-detector');
+const AdvancedQuestionTypes = require('./advanced-question-types');
 
 const app = express();
 const PORT = 3000;
@@ -412,6 +413,27 @@ app.post('/api/teams/submit', (req, res) => {
         manualGradingNeeded = true;
         totalPoints += qPoints;
         break;
+
+      // Advanced question types
+      case 'matching':
+      case 'ordering':
+      case 'hotspot':
+      case 'drag-drop':
+      case 'code':
+      case 'essay':
+      case 'audio-video':
+        const result = AdvancedQuestionTypes.scoreQuestion(q, studentAnswer);
+        isCorrect = result.isCorrect;
+        score += result.score || 0;
+        needsManualGrading = result.needsManualGrading || false;
+        if (result.needsManualGrading) {
+          manualGradingNeeded = true;
+        }
+        if (!result.needsManualGrading) {
+          totalGraded++;
+        }
+        totalPoints += qPoints;
+        break;
     }
 
     detailedResults.push({
@@ -567,6 +589,27 @@ app.post('/api/submit', (req, res) => {
         // Needs manual grading - don't count towards automatic score
         needsManualGrading = true;
         manualGradingNeeded = true;
+        totalPoints += qPoints;
+        break;
+
+      // Advanced question types
+      case 'matching':
+      case 'ordering':
+      case 'hotspot':
+      case 'drag-drop':
+      case 'code':
+      case 'essay':
+      case 'audio-video':
+        const result = AdvancedQuestionTypes.scoreQuestion(q, studentAnswer);
+        isCorrect = result.isCorrect;
+        score += result.score || 0;
+        needsManualGrading = result.needsManualGrading || false;
+        if (result.needsManualGrading) {
+          manualGradingNeeded = true;
+        }
+        if (!result.needsManualGrading) {
+          totalGraded++;
+        }
         totalPoints += qPoints;
         break;
     }

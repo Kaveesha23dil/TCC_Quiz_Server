@@ -1,0 +1,501 @@
+/**
+ * Advanced Question Types Styles
+ * CSS for all advanced question UI components
+ */
+
+/* ==================== General Styles ==================== */
+.question-instructions {
+  font-size: 1rem;
+  font-weight: 500;
+  margin-bottom: 1.5rem;
+  color: var(--dark, #2d3436);
+  line-height: 1.6;
+}
+
+.btn-small {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background: var(--primary, #6c5ce7);
+  color: white;
+  font-weight: 500;
+  transition: all 0.3s;
+  margin: 0.25rem;
+}
+
+.btn-small:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.btn-small.btn-danger {
+  background: var(--danger, #e74c3c);
+}
+
+.btn-small.btn-danger:hover {
+  box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* ==================== Matching Question Styles ==================== */
+.matching-question {
+  padding: 1.5rem;
+}
+
+.matching-container {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.matching-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.matching-item {
+  background: var(--light, #f8f9fa);
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  padding: 1rem;
+  transition: all 0.3s;
+}
+
+.matching-item:hover {
+  border-color: var(--primary, #6c5ce7);
+  transform: translateX(5px);
+}
+
+.matching-item .item-content {
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: var(--dark, #2d3436);
+}
+
+.matching-select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.matching-select:focus {
+  outline: none;
+  border-color: var(--primary, #6c5ce7);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+/* ==================== Ordering Question Styles ==================== */
+.ordering-question {
+  padding: 1.5rem;
+}
+
+.ordering-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.ordering-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--light, #f8f9fa);
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  padding: 1rem;
+  cursor: move;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.ordering-item:hover {
+  border-color: var(--primary, #6c5ce7);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+}
+
+.ordering-item.dragging {
+  opacity: 0.5;
+  transform: scale(1.05);
+}
+
+.drag-handle {
+  font-size: 1.5rem;
+  color: var(--primary, #6c5ce7);
+  cursor: grab;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.ordering-item .item-content {
+  flex: 1;
+  font-weight: 500;
+  color: var(--dark, #2d3436);
+}
+
+.order-number {
+  background: var(--primary, #6c5ce7);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.ordering-buttons {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+/* ==================== Hotspot Question Styles ==================== */
+.hotspot-question {
+  padding: 1.5rem;
+}
+
+.hotspot-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hotspot-canvas-wrapper {
+  position: relative;
+  display: inline-block;
+  border: 3px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.hotspot-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.hotspot-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  cursor: crosshair;
+}
+
+.hotspot-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--light, #f8f9fa);
+  padding: 1rem;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+/* ==================== Drag and Drop Question Styles ==================== */
+.drag-drop-question {
+  padding: 1.5rem;
+}
+
+.drag-drop-container {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
+.drag-items-pool {
+  background: var(--light, #f8f9fa);
+  border: 2px dashed var(--gray, #dfe6e9);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.drag-items-pool h4 {
+  margin-bottom: 1rem;
+  color: var(--primary, #6c5ce7);
+}
+
+.drag-item {
+  background: white;
+  border: 2px solid var(--primary, #6c5ce7);
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  cursor: move;
+  font-weight: 500;
+  transition: all 0.3s;
+  user-select: none;
+}
+
+.drag-item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+.drag-item.dragging {
+  opacity: 0.5;
+}
+
+.drop-zones {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.drop-zone {
+  background: var(--light, #f8f9fa);
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.drop-zone h4 {
+  margin-bottom: 0.75rem;
+  color: var(--primary, #6c5ce7);
+}
+
+.drop-area {
+  min-height: 100px;
+  background: white;
+  border: 2px dashed var(--gray, #dfe6e9);
+  border-radius: 10px;
+  padding: 0.75rem;
+  transition: all 0.3s;
+}
+
+.drop-area.drag-over {
+  border-color: var(--primary, #6c5ce7);
+  background: rgba(108, 92, 231, 0.05);
+}
+
+.drop-area .drag-item {
+  margin-bottom: 0.5rem;
+}
+
+/* ==================== Code Question Styles ==================== */
+.code-question {
+  padding: 1.5rem;
+}
+
+.code-editor-container {
+  background: #1e1e1e;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.code-editor-header {
+  background: #2d2d2d;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.language-badge {
+  background: var(--primary, #6c5ce7);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.editor-label {
+  color: #cccccc;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.code-editor {
+  width: 100%;
+  min-height: 300px;
+  padding: 1rem;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  border: none;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.code-editor:focus {
+  outline: none;
+}
+
+.test-cases-info {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: rgba(0, 206, 201, 0.1);
+  border-left: 4px solid var(--secondary, #00cec9);
+  border-radius: 8px;
+}
+
+/* ==================== Essay Question Styles ==================== */
+.essay-question {
+  padding: 1.5rem;
+}
+
+.essay-editor {
+  width: 100%;
+  min-height: 300px;
+  padding: 1rem;
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.8;
+  resize: vertical;
+  transition: all 0.3s;
+}
+
+.essay-editor:focus {
+  outline: none;
+  border-color: var(--primary, #6c5ce7);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+.word-count {
+  margin-top: 0.75rem;
+  font-weight: 600;
+  color: var(--primary, #6c5ce7);
+}
+
+.rubric-preview {
+  margin-top: 1.5rem;
+  padding: 1.5rem;
+  background: rgba(255, 193, 7, 0.1);
+  border: 2px solid rgba(255, 193, 7, 0.3);
+  border-radius: 12px;
+}
+
+.rubric-preview h4 {
+  margin-bottom: 1rem;
+  color: #f39c12;
+}
+
+.rubric-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.rubric-preview li {
+  padding: 0.75rem;
+  background: white;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* ==================== Media Question Styles ==================== */
+.media-question {
+  padding: 1.5rem;
+}
+
+.media-player {
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: center;
+}
+
+.audio-player,
+.video-player {
+  width: 100%;
+  max-width: 600px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.video-player {
+  max-height: 400px;
+}
+
+.media-response {
+  margin-top: 1.5rem;
+}
+
+.media-text-answer {
+  width: 100%;
+  min-height: 150px;
+  padding: 1rem;
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 1rem;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.media-text-answer:focus {
+  outline: none;
+  border-color: var(--primary, #6c5ce7);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+.timestamp-input {
+  width: 150px;
+  padding: 0.75rem;
+  border: 2px solid var(--gray, #dfe6e9);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.timestamp-input:focus {
+  outline: none;
+  border-color: var(--primary, #6c5ce7);
+  box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.2);
+}
+
+/* ==================== Responsive Design ==================== */
+@media (max-width: 768px) {
+  .drag-drop-container {
+    grid-template-columns: 1fr;
+  }
+
+  .matching-container {
+    flex-direction: column;
+  }
+
+  .ordering-item {
+    font-size: 0.9rem;
+  }
+
+  .code-editor,
+  .essay-editor {
+    font-size: 0.9rem;
+  }
+}
+
+/* ==================== Animation Utilities ==================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-out;
+}

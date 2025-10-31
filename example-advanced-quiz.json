@@ -1,0 +1,299 @@
+{
+  "name": "Advanced Question Types Demo Quiz",
+  "description": "A comprehensive demonstration of all advanced question types",
+  "questions": [
+    {
+      "type": "matching",
+      "question": "Match each programming language with its primary creator:",
+      "points": 5,
+      "partialCredit": true,
+      "passingPercentage": 0.6,
+      "leftItems": [
+        {"id": "python", "content": "Python"},
+        {"id": "javascript", "content": "JavaScript"},
+        {"id": "java", "content": "Java"},
+        {"id": "cpp", "content": "C++"}
+      ],
+      "rightItems": [
+        {"id": "guido", "content": "Guido van Rossum"},
+        {"id": "brendan", "content": "Brendan Eich"},
+        {"id": "james", "content": "James Gosling"},
+        {"id": "bjarne", "content": "Bjarne Stroustrup"}
+      ],
+      "correctPairs": {
+        "python": "guido",
+        "javascript": "brendan",
+        "java": "james",
+        "cpp": "bjarne"
+      }
+    },
+    {
+      "type": "ordering",
+      "question": "Arrange the HTTP status codes from lowest to highest:",
+      "points": 4,
+      "partialCredit": true,
+      "shuffleItems": true,
+      "items": [
+        {"id": "200", "content": "200 OK"},
+        {"id": "301", "content": "301 Moved Permanently"},
+        {"id": "404", "content": "404 Not Found"},
+        {"id": "500", "content": "500 Internal Server Error"}
+      ],
+      "correctOrder": ["200", "301", "404", "500"]
+    },
+    {
+      "type": "ordering",
+      "question": "Order the steps of the software development lifecycle:",
+      "points": 5,
+      "partialCredit": true,
+      "passingPercentage": 0.7,
+      "shuffleItems": true,
+      "items": [
+        {"id": "planning", "content": "Planning & Requirements"},
+        {"id": "design", "content": "System Design"},
+        {"id": "implementation", "content": "Implementation"},
+        {"id": "testing", "content": "Testing & QA"},
+        {"id": "deployment", "content": "Deployment"},
+        {"id": "maintenance", "content": "Maintenance"}
+      ],
+      "correctOrder": ["planning", "design", "implementation", "testing", "deployment", "maintenance"]
+    },
+    {
+      "type": "hotspot",
+      "question": "Identify the header section in the webpage layout",
+      "instructions": "Click on the area that represents the header section (top region)",
+      "points": 3,
+      "imageUrl": "/images/webpage-layout.png",
+      "maxClicks": 3,
+      "partialCredit": false,
+      "hotspots": [
+        {
+          "id": "header",
+          "shape": "rectangle",
+          "x": 50,
+          "y": 20,
+          "width": 700,
+          "height": 80
+        }
+      ],
+      "requiredHotspots": 1
+    },
+    {
+      "type": "drag-drop",
+      "question": "Categorize these data structures by their time complexity for search operations:",
+      "points": 6,
+      "partialCredit": true,
+      "items": [
+        {"id": "array", "content": "Array (unsorted)"},
+        {"id": "bst", "content": "Binary Search Tree"},
+        {"id": "hashtable", "content": "Hash Table"},
+        {"id": "linkedlist", "content": "Linked List"},
+        {"id": "sortedarray", "content": "Sorted Array"}
+      ],
+      "dropZones": [
+        {"id": "o1", "label": "O(1) - Constant Time"},
+        {"id": "ologn", "label": "O(log n) - Logarithmic"},
+        {"id": "on", "label": "O(n) - Linear Time"}
+      ],
+      "correctPlacements": {
+        "o1": ["hashtable"],
+        "ologn": ["bst", "sortedarray"],
+        "on": ["array", "linkedlist"]
+      }
+    },
+    {
+      "type": "code",
+      "question": "Write a function to check if a string is a palindrome",
+      "instructions": "Create a function named 'isPalindrome' that takes a string parameter and returns true if it's a palindrome, false otherwise. Ignore case and spaces.",
+      "points": 10,
+      "language": "javascript",
+      "template": "function isPalindrome(str) {\n  // Your code here\n  \n}",
+      "testCases": [
+        {
+          "input": "racecar",
+          "expectedOutput": true,
+          "description": "Simple palindrome"
+        },
+        {
+          "input": "hello",
+          "expectedOutput": false,
+          "description": "Not a palindrome"
+        },
+        {
+          "input": "A man a plan a canal Panama",
+          "expectedOutput": true,
+          "description": "Palindrome with spaces and mixed case"
+        },
+        {
+          "input": "race a car",
+          "expectedOutput": false,
+          "description": "Not a palindrome with spaces"
+        }
+      ]
+    },
+    {
+      "type": "code",
+      "question": "Implement a function to find the factorial of a number",
+      "instructions": "Write a function named 'factorial' that calculates the factorial of a given positive integer.",
+      "points": 8,
+      "language": "python",
+      "template": "def factorial(n):\n    # Your code here\n    pass",
+      "testCases": [
+        {
+          "input": 5,
+          "expectedOutput": 120,
+          "description": "factorial(5) = 120"
+        },
+        {
+          "input": 0,
+          "expectedOutput": 1,
+          "description": "factorial(0) = 1"
+        },
+        {
+          "input": 1,
+          "expectedOutput": 1,
+          "description": "factorial(1) = 1"
+        }
+      ]
+    },
+    {
+      "type": "essay",
+      "question": "Explain the concept of Object-Oriented Programming and discuss its four main principles",
+      "instructions": "Write a comprehensive essay covering encapsulation, inheritance, polymorphism, and abstraction. Include examples for each principle.",
+      "points": 15,
+      "minWords": 250,
+      "maxWords": 600,
+      "passingPercentage": 0.6,
+      "rubric": [
+        {
+          "id": "understanding",
+          "name": "Understanding of OOP Principles",
+          "description": "Demonstrates clear understanding of all four OOP principles",
+          "maxPoints": 6
+        },
+        {
+          "id": "examples",
+          "name": "Quality of Examples",
+          "description": "Provides relevant, accurate, and well-explained examples",
+          "maxPoints": 4
+        },
+        {
+          "id": "structure",
+          "name": "Organization and Structure",
+          "description": "Well-organized with clear introduction, body, and conclusion",
+          "maxPoints": 3
+        },
+        {
+          "id": "grammar",
+          "name": "Writing Quality",
+          "description": "Proper grammar, spelling, and professional writing style",
+          "maxPoints": 2
+        }
+      ]
+    },
+    {
+      "type": "essay",
+      "question": "Describe the differences between SQL and NoSQL databases",
+      "instructions": "Compare and contrast SQL and NoSQL databases, discussing their use cases, advantages, and disadvantages.",
+      "points": 12,
+      "minWords": 200,
+      "maxWords": 400,
+      "passingPercentage": 0.65,
+      "rubric": [
+        {
+          "id": "accuracy",
+          "name": "Technical Accuracy",
+          "description": "Information is factually correct and precise",
+          "maxPoints": 5
+        },
+        {
+          "id": "comparison",
+          "name": "Quality of Comparison",
+          "description": "Effectively compares and contrasts both database types",
+          "maxPoints": 4
+        },
+        {
+          "id": "clarity",
+          "name": "Clarity and Coherence",
+          "description": "Ideas are clearly expressed and logically organized",
+          "maxPoints": 3
+        }
+      ]
+    },
+    {
+      "type": "audio-video",
+      "mediaType": "audio",
+      "mediaUrl": "/media/pronunciation-sample.mp3",
+      "question": "Which word is being pronounced in the audio clip?",
+      "instructions": "Listen carefully to the audio clip and select the correct word.",
+      "points": 2,
+      "responseType": "multiple-choice",
+      "options": [
+        {"value": "accept", "text": "Accept"},
+        {"value": "except", "text": "Except"},
+        {"value": "expect", "text": "Expect"}
+      ],
+      "correct": "accept"
+    },
+    {
+      "type": "audio-video",
+      "mediaType": "video",
+      "mediaUrl": "/media/algorithm-explanation.mp4",
+      "question": "Summarize the sorting algorithm explained in the video",
+      "instructions": "Watch the video and write a brief summary of how the sorting algorithm works.",
+      "points": 5,
+      "responseType": "short-answer"
+    },
+    {
+      "type": "audio-video",
+      "mediaType": "video",
+      "mediaUrl": "/media/code-demonstration.mp4",
+      "question": "At what timestamp (in seconds) does the speaker demonstrate the bug in the code?",
+      "instructions": "Identify the exact time when the bug is shown.",
+      "points": 3,
+      "responseType": "timestamp",
+      "correctTimestamp": 45.5,
+      "timestampTolerance": 2
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Which of the following is NOT a principle of SOLID design?",
+      "points": 2,
+      "options": [
+        "Single Responsibility Principle",
+        "Open/Closed Principle",
+        "Liskov Substitution Principle",
+        "Dynamic Typing Principle",
+        "Dependency Inversion Principle"
+      ],
+      "correct": 3
+    },
+    {
+      "type": "multiple-answer",
+      "question": "Select all valid HTTP methods:",
+      "points": 3,
+      "options": [
+        "GET",
+        "POST",
+        "FETCH",
+        "PUT",
+        "DELETE",
+        "SEND"
+      ],
+      "correct": [0, 1, 3, 4]
+    },
+    {
+      "type": "fill-blank",
+      "question": "The _____ pattern ensures a class has only one instance and provides a global point of access to it.",
+      "points": 2,
+      "correct": "Singleton"
+    },
+    {
+      "type": "true-false",
+      "question": "JavaScript is a statically-typed programming language.",
+      "points": 1,
+      "correct": false
+    }
+  ],
+  "results": []
+}
